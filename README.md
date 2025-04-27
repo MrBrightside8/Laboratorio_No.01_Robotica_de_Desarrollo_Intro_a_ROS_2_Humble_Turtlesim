@@ -4,8 +4,10 @@
 
 Dentro del **workspace** creado en clase (*my_turtle_controller*), se debe editar el archivo **move turtle.py**, el objetivo es controlar el movimiento de la tortuga en el simulador *turtlesim* mediante el teclado, cumpliendo con los siguientes requerimientos:
 
+## Objetivos
+
 ## 1. Control de movimiento manual
 
-  # Objetivos
+
 # Procedimiento
 # Diseño y funcionamiento
