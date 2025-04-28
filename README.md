@@ -24,6 +24,7 @@ Dentro del **workspace** creado en clase (*my_turtle_controller*), se debe edita
 
 ## Restricción importante:
 • Gestionar el movimiento de la tortuga exclusivamente desde el script *move turtle.py*.
+
 • No se puede utilizar el nodo *turtle_teleop_key* para el control con teclado.
 
 ## Diseño y funcionamiento
