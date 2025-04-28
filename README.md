@@ -22,6 +22,32 @@ Dentro del **workspace** creado en clase (*my_turtle_controller*), se debe edita
 ◦ Flecha ←: girar a la izquierda.<br>
 ◦ Flecha →: girar a la derecha.<br>
 
+## Diseño y funcionamiento
+
+**1. Control de movimiento manual**
+
+El controlador de movimiento manual inicia leyendo continuamente la entrada del teclado dentro de un bucle principal. Cada vez que se presiona una tecla, primero se verifica si corresponde a una flecha; si es así, se ejecuta una trayectoria y se imprime un mensaje antes de volver a leer el teclado. Si la tecla no es una flecha, se evalúa si es la letra 't'; en ese caso, el programa limpia la trayectoria y continúa esperando una nueva entrada. Si tampoco es 't', se verifica si la tecla es 'q'; si lo es, el programa finaliza su ejecución. Si la tecla presionada no corresponde a ninguna de las opciones anteriores, simplemente se ignora y se vuelve a leer una nueva tecla. 
+
+En el diseño del controlador, las teclas 't' y 'q' cumplen funciones específicas para mejorar el control y la flexibilidad del sistema. La tecla 't' permite limpiar la trayectoria registrada, lo cual es útil para reiniciar el recorrido sin necesidad de reiniciar todo el programa, facilitando así correcciones o nuevos intentos de ejecución. Por otro lado, la tecla 'q' ofrece una manera controlada de finalizar el programa, asegurando que la salida ocurra de forma segura y sin interrupciones forzadas. Estas funciones se crean en el diseño para brindar al usuario un mayor control sobre el flujo de ejecución.
+
+```mermaid
+---
+config:
+   theme: dark
+---
+flowchart TD
+    A(["Inicio"]) --> B["Tecla <-- Lectura teclado "]
+    B --> C{"Tecla == flecha?"}
+    C -- Sí --> D["Ejecuta trayectoria "]
+    C -- No --> E{"Tecla == 't'? "}
+    E -- Sí --> F["Limpiar trayectoria"]
+    F --> B
+    E -- No --> G{"Tecla == 'q'? "}
+    G -- Sí --> H(["Fin"])
+    G -- No --> B
+    D --> I["Imprimir mensaje"]
+    I --> B
+```
 ## Procedimiento
 
  **1. Control de movimiento manual**
@@ -192,7 +218,5 @@ def main(args=None):
         rclpy.shutdown()
 ```
 
-## Diseño y funcionamiento
 
-**1. Control de movimiento manual**
 
