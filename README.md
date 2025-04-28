@@ -280,6 +280,66 @@ def pose_callback(self, pose_message): #actualiza la posiciòn de la tortuga
         self.y = pose_message.y
         self.theta = pose_message.theta
 ```
+Función para limpiar pantalla cuándo se le haga la solicitud de hacerlo.
+```
+def clear_trail(self):
+        req = Empty.Request() #Limpiar pantalla
+        self.clear_client.call_async(req)
+        self.get_logger().info('¡Trayectoria limpiada!')
+```
+
+```
+Función para teletransportar la tortuga a una posición x,y con ángulo theta:
+
+def teleport_to_start(self, x, y, theta):
+        req = TeleportAbsolute.Request()
+        req.x = x #Teletransporta la tortuga a la direcciòn (x,y)
+        req.y = y
+        req.theta = theta
+        self.teleport_client.call_async(req)
+```
+Función que normaliza el ángulo para trabajar valores entre pi y -pi:
+```
+ def normalize_angle(self, angle):
+        while angle > math.pi:
+            angle -= 2 * math.pi
+        while angle < -math.pi: #hace que el àngulo estè en un rango entre pi y -pi
+            angle += 2 * math.pi
+        return angle
+
+```
+Función que hace que se inicie el dibujo de la letra, limpiando la pantalla y moviendo la tortuga al punto inicial, extrae la letra digitada por el teclado y genera un estado start_letra  que determina que función se de be llamar de acuerdo a la letra seleccionada.
+```
+def start_drawing(self, letter):
+        self.clear_trail() #limpia la pantalla
+        self.teleport_to_start(5.544445, 5.544445, 0.0) #posiciòn inicial
+        self.letter = letter #almacena la letra
+        self.stage = f'start_{letter.lower()}' #estado inicial
+        if self.timer:
+            self.timer.cancel()
+        self.timer = self.create_timer(0.1, self.control_loop)
+```
+Bucle de control, y condicionales que llaman a la función de la letra, de acuerdo a la tecla presionada, el publisher muestra la velocidad de la tortuga.
+```
+ def control_loop(self): #Bucle de control
+        msg = Twist()
+
+        if self.letter == 'M':
+            self.draw_M(msg)
+        elif self.letter == 'J':
+            self.draw_J(msg)
+        elif self.letter == 'L':
+            self.draw_L(msg)
+        elif self.letter == 'R':
+            self.draw_R(msg)
+
+        self.publisher_.publish(msg) #mensaje de velocidad de la otrtuga
+```
+```
+
+```
+
+El diagrama de flujo del programa es el siguiente:
 ```mermaid
 ---
 config:
