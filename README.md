@@ -158,7 +158,7 @@ Para la función control_loop se efectuaron las siguentes lìneas de còdigo:
 
 *stdscr.clear()*: Borra todo el contenido de la ventana stdscr (la terminal), permite que los mensajes anteriores se borren y solo se muestren los nuevos.
 
-*stdscr.addstr(0, 0, "↑ ↓ ← → para mover, 'c' limpiar trayectoria, 'q' salir.")*: addstr escribe una cadena de texto en la ventana stdscr, donde el parámetro (0, 0) especifica las coordenadas de la pantalla donde se imprimirá el texto, en este caso, la esquina superior izquierda de la terminal.
+*stdscr.addstr(0, 0, "↑ ↓ ← → para mover, 't' limpiar trayectoria, 'q' salir.")*: addstr escribe una cadena de texto en la ventana stdscr, donde el parámetro (0, 0) especifica las coordenadas de la pantalla donde se imprimirá el texto, en este caso, la esquina superior izquierda de la terminal.
 "↑ ↓ ← → para mover, 'c' limpiar trayectoria, 'q' salir." es el mensaje que se muestra en la pantalla, indicando las teclas que el usuario debe presionar para controlar la tortuga.
 
 *stdscr.refresh()*: actualiza la pantalla de la ventana stdscr después de realizar cambios, asegurando que el contenido recién añadido o actualizado sea visible para el usuario.
@@ -169,7 +169,7 @@ def control_loop(self, stdscr):
         curses.cbreak()
         stdscr.nodelay(True)
         stdscr.clear()
-        stdscr.addstr(0, 0, "↑ ↓ ← → para mover, 'c' limpiar trayectoria, 'q' salir.")
+        stdscr.addstr(0, 0, "↑ ↓ ← → para mover, 't' limpiar trayectoria, 'q' salir.")
         stdscr.refresh()
 ```
 
