@@ -6,8 +6,192 @@ Dentro del **workspace** creado en clase (*my_turtle_controller*), se debe edita
 
 ## Objetivos
 
-## 1. Control de movimiento manual
+1. Permitir mover la tortuga de forma lineal y angular utilizando las flechas del teclado: <br>
+
+  Acciones asignadas:<br>
+◦ Flecha ↑: avanzar hacia adelante.<br>
+◦ Flecha ↓: retroceder.<br>
+◦ Flecha ←: girar a la izquierda.<br>
+◦ Flecha →: girar a la derecha.<br>
+
+## Procedimiento
+
+ **1. Control de movimiento manual**
+ 
+Dentro del **workspace** creado en clase (my_turtle_controller), se procedió a editar el archivo move_turtle.py para poder mover la tortuga utilizando las flechas del teclado. A continución se describe cada linea de código para la conformaciòn del control de movimiento manual.
+
+**Adición de lbrerias**
+
+Como primer paso, se agregaron nuevas librerías además de las que ya existían en el código anterior. Las librerías incorporadas fueron:
+
+◦ Empty: Esta librería es un tipo especial de servicio definido en el paquete std_srvs, que se usa cuando se quiere activar una acción en un nodo sin tener que enviarle parámetros.Un ejemplo común de su uso es la limpieza de la pantalla en una simulación.
+
+◦ curses: Esta librería proporciona un conjunto de funciones para la gestión de entradas de teclado permitiendo capturar pulsaciones de teclas sin necesidad de presionar "Enter" y gestionar eventos de teclado en tiempo real.
+
+La libreria Empty fue utilizada para implementar una funciòn adicional que permita limpiar los trazos de las trayectorias marcadas en la pantalla de turtlesim.
+ 
+ ```
+#Importaciòn de librerias
+
+import rclpy
+from rclpy.node import Node
+from geometry_msgs.msg import Twist
+from std_srvs.srv import Empty           # Libreria adicional para limpiar pantalla
+import curses                            # Libreria adicional para permitir la entrada de teclado
+ 
+```
+**Creación de la clase TurtleController**
+
+Se definió la clase **TurtleController**, la cual heredó de la clase **Node**, lo que permite que TurtleController se convierta en un nodo dentro de ROS.
+
+*def __init__(self)*: inicializa el objeto de la clase **TurtleController** mediante el método especial, el cual actúa como el constructor de la clase.
+
+super().__init__('turtle_controller')*: dentro del constructor, se invoca el constructor de la clase base **Node**  con *super().*. En este caso, 'turtle_controller' fue el nombre asignado al nodo dentro de ROS.
+
+*self.create_publisher(Twist, '/turtle1/cmd_vel', 10)*: crea un publicador en la clase **TurtleController** utilizando el método. Este publicador permite que el nodo envie mensajes del tipo Twist al tópico */turtle1/cmd_vel*, el cual se utiliza para controlar el movimiento de la tortuga en el simulador. 
+
+```
+# *******************************Creacion de la clase TurtleController**********************************
+class TurtleController(Node):       
+    def __init__(self):
+        super().__init__('turtle_controller')
+        self.publisher_ = self.create_publisher(Twist, '/turtle1/cmd_vel', 10)
+```
+**Creación de cliente para limpiar la trayectoria**
+
+Para limpiar la pantalla de las trayectorias marcadas por la tortuga, se creó un cliente para interactuar con un servicio clear en ROS de la siguiente manera:
+
+*self.clear_client = self.create_client(Empty, '/clear')*: Esta línea crea un cliente para el servicio /clear. En ROS, un cliente de servicio es un nodo que envía solicitudes a un servicio y recibe respuestas. El tipo de mensaje utilizado fue Empty, lo que significa que no se requiere enviar ni recibir datos.
+
+*while not self.clear_client.wait_for_service(timeout_sec=1.0)*: Se define un ciclo para que el cliente espere hasta que el servicio /clear este disponible. El parámetro *timeout_sec=1.0* hace que el cliente espere 1 segundo entre cada intento de conexión. Si el servicio no esta disponible en ese tiempo, el cliente continua esperando y repite la comprobación en cada iteración del bucle.
+
+*self.get_logger().info('Esperando al servicio /clear...')*: Mientras espera la disponibilidad del servicio, el nodo imprime un mensaje en el registro indicando que siga esperando. Este mensaje es útil para informar que el cliente continua buscando el servicio para poder interactuar con él.
+
+```
+# *******************************Creacion de cliente para el servicio CLEAR**********************************
+self.clear_client = self.create_client(Empty, '/clear')
+while not self.clear_client.wait_for_service(timeout_sec=1.0):
+    self.get_logger().info('Esperando al servicio /clear...')
+```
+
+**Creación de la función Limpiar trayectoria (clear_trail)**
+
+Se creó la función Limpiar trayectoria con los siguientes comandos:
+
+*def clear_trail(self)*: Define la función clear_trail que limpia la trayectoria de la tortuga.
+
+*req = Empty.Request()*: Crea una solicitud vacía para enviar al servicio /clear. 
+
+*self.clear_client.call_async(req)*: Este código está llamando de forma asíncrona a un servicio usando *clear_client* y pasando un mensaje de solicitud (req) al servicio. Dado que es una llamada asíncrona, el programa no se detendrá a esperar una respuesta, sino que continuará su ejecución mientras se procesa la solicitud en segundo plano.
+
+*self.get_logger().info(...)*: Registra un mensaje indicando que la trayectoria ha sido limpiada.
 
 
-# Procedimiento
+```
+def clear_trail(self):
+        req = Empty.Request()
+        self.clear_client.call_async(req)
+        self.get_logger().info('¡Trayectoria limpiada!')
+```
+**Creación de la función control_loop**
+
+Para la función control_loop se efectuaron las siguentes lìneas de còdigo:
+
+*def control_loop(self, stdscr)*: Define la función control_loop, que es un bucle de control para manejar las entradas del teclado para controlar la tortuga. El parámetro *stdscr* maneja la pantalla de la terminal.
+
+*curses.cbreak()*: Activa el modo cbreak en la terminal permitiendo que las teclas que se presionan sean enviadas inmediatamente a la aplicación sin necesidad de presionar Enter.
+
+*stdscr.nodelay(True)*: Configura la ventana de curses para que el modo no bloqueante esté habilitado, es decir, permitir que el programa siga ejecutándose incluso si el usuario no presiona ninguna tecla.
+
+*stdscr.clear()*: Borra todo el contenido de la ventana stdscr (la terminal), permite que los mensajes anteriores se borren y solo se muestren los nuevos.
+
+*stdscr.addstr(0, 0, "↑ ↓ ← → para mover, 'c' limpiar trayectoria, 'q' salir.")*: addstr escribe una cadena de texto en la ventana stdscr, donde el parámetro (0, 0) especifica las coordenadas de la pantalla donde se imprimirá el texto, en este caso, la esquina superior izquierda de la terminal.
+
+"↑ ↓ ← → para mover, 'c' limpiar trayectoria, 'q' salir." es el mensaje que se muestra en la pantalla, indicando las teclas que el usuario debe presionar para controlar la tortuga.
+
+*stdscr.refresh()*: actualiza la pantalla de la ventana stdscr después de realizar cambios, asegurando que el contenido recién añadido o actualizado sea visible para el usuario.
+
+```
+def control_loop(self, stdscr):
+        curses.cbreak()
+        stdscr.nodelay(True)
+        stdscr.clear()
+        stdscr.addstr(0, 0, "↑ ↓ ← → para mover, 'c' limpiar trayectoria, 'q' salir.")
+        stdscr.refresh()
+```
+
+**Creación del bucle principal de control**
+
+Se realiza el bucle principal de control teneiendo en cuenta el siguiente ciclo While:
+
+*while rclpy.ok()*: Este comando establece que el bucle continúa mientras ROS esté funcionando correctamente.
+
+*key = stdscr.getch()*: Lee la tecla presionada por el usuario desde la terminal.
+
+*msg = Twist()*: Crea un objeto Twist que se usará para enviar el mensaje de movimiento.
+
+Luego,se crea los comando a partir de instrucciones condicionales segun qué tecla fue presionada:
+
+◦ Si es la flecha hacia arriba (curses.KEY_UP), la tortuga se moverá hacia adelante con una velocidad lineal de 2.0.
+
+◦ Si es la flecha hacia abajo (curses.KEY_DOWN), la tortuga se moverá hacia atrás con una velocidad lineal de -2.0.
+
+◦ Si es la flecha hacia la izquierda (curses.KEY_LEFT), la tortuga girará a la izquierda con una velocidad angular de 2.0.
+
+◦ Si es la flecha hacia la derecha (curses.KEY_RIGHT), la tortuga girará a la derecha con una velocidad angular de -2.0.
+
+◦ elif key == ord('t'): Si se presiona la tecla 'c', se llama a la función clear_trail() para limpiar la trayectoria de la tortuga.
+
+◦ elif key == ord('q'):: Si se presiona la tecla 'q', el bucle termina y el programa se detiene.
+
+◦ self.publisher_.publish(msg): Publica el mensaje msg en el tópico /turtle1/cmd_vel para que la tortuga reciba las instrucciones de movimiento.
+
+◦ rclpy.spin_once(self, timeout_sec=0.1): Ejecuta una iteración de rclpy para procesar cualquier callback pendiente y esperar 0.1 segundos.
+
+```
+while rclpy.ok():
+            key = stdscr.getch()
+            msg = Twist()
+
+            if key == curses.KEY_UP:
+                msg.linear.x = 2.0
+            elif key == curses.KEY_DOWN:
+                msg.linear.x = -2.0
+            elif key == curses.KEY_LEFT:
+                msg.angular.z = 2.0
+            elif key == curses.KEY_RIGHT:
+                msg.angular.z = -2.0
+            elif key == ord('c'):
+                self.clear_trail()
+            elif key == ord('q'):
+                break
+
+            self.publisher_.publish(msg)
+            rclpy.spin_once(self, timeout_sec=0.1)
+```
+**Definición de la función main**
+
+*rclpy.init(args=args)*: inicializa el entorno de ROS 2, permitiendo que el programa se conecte y se comunique con los nodos, servicios y tópicos dentro del sistema ROS 2.
+
+*node = TurtleController()*: crea una instancia del nodo TurtleController.
+
+*curses.wrapper(node.control_loop)*: llama a la función control_loop envuelta en curses.wrapper, que maneja la inicialización y el cierre correcto de la interfaz de texto.
+
+*node.destroy_node()*: en ROS 2, cuando un nodo deja de ser necesario o se va a cerrar, se debe destruir explícitamente utilizando el método destroy_node().
+
+*rclpy.shutdown()*: es una función que detiene el sistema de comunicación de ROS 2. Esta función se debe llamar al final de un programa que utiliza ROS 2 para liberar todos los recursos que ROS 2 ha estado utilizando durante la ejecución.
+
+```
+def main(args=None):
+    rclpy.init(args=args)
+    node = TurtleController()
+    try:
+        curses.wrapper(node.control_loop)
+    except KeyboardInterrupt:
+        pass
+    finally:
+        node.destroy_node()
+        rclpy.shutdown()
+```
+
 # Diseño y funcionamiento
