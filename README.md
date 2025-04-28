@@ -115,9 +115,13 @@ while not self.clear_client.wait_for_service(timeout_sec=1.0):
 Se creó la función Limpiar trayectoria con los siguientes comandos:
 
 *def clear_trail(self)*: Define la función clear_trail que limpia la trayectoria de la tortuga.
+
 *req = Empty.Request()*: Crea una solicitud vacía para enviar al servicio /clear. 
+
 *self.clear_client.call_async(req)*: Este código está llamando de forma asíncrona a un servicio usando *clear_client* y pasando un mensaje de solicitud (req) al servicio. Dado que es una llamada asíncrona, el programa no se detendrá a esperar una respuesta, sino que continuará su ejecución mientras se procesa la solicitud en segundo plano.
+
 *self.get_logger().info(...)*: Registra un mensaje indicando que la trayectoria ha sido limpiada.
+
 
 
 ```
@@ -158,20 +162,20 @@ def control_loop(self, stdscr):
 
 Se realiza el bucle principal de control teneiendo en cuenta el siguiente ciclo While:
 
-*while rclpy.ok()*: Este comando establece que el bucle continúa mientras ROS esté funcionando correctamente.
-*key = stdscr.getch()*: Lee la tecla presionada por el usuario desde la terminal.
-*msg = Twist()*: Crea un objeto Twist que se usará para enviar el mensaje de movimiento.
+*while rclpy.ok()*: Este comando establece que el bucle continúa mientras ROS esté funcionando correctamente.<br>
+*key = stdscr.getch()*: Lee la tecla presionada por el usuario desde la terminal.<br>
+*msg = Twist()*: Crea un objeto Twist que se usará para enviar el mensaje de movimiento.<br>
 
 Luego,se crea los comando a partir de instrucciones condicionales segun qué tecla fue presionada:
 
-◦ Si es la flecha hacia arriba (curses.KEY_UP), la tortuga se moverá hacia adelante con una velocidad lineal de 2.0.
-◦ Si es la flecha hacia abajo (curses.KEY_DOWN), la tortuga se moverá hacia atrás con una velocidad lineal de -2.0.
-◦ Si es la flecha hacia la izquierda (curses.KEY_LEFT), la tortuga girará a la izquierda con una velocidad angular de 2.0.
-◦ Si es la flecha hacia la derecha (curses.KEY_RIGHT), la tortuga girará a la derecha con una velocidad angular de -2.0.
-◦ elif key == ord('t'): Si se presiona la tecla 'c', se llama a la función clear_trail() para limpiar la trayectoria de la tortuga.
-◦ elif key == ord('q'):: Si se presiona la tecla 'q', el bucle termina y el programa se detiene.
+◦ Si es la flecha hacia arriba (curses.KEY_UP), la tortuga se moverá hacia adelante con una velocidad lineal de 2.0.<br>
+◦ Si es la flecha hacia abajo (curses.KEY_DOWN), la tortuga se moverá hacia atrás con una velocidad lineal de -2.0.<br>
+◦ Si es la flecha hacia la izquierda (curses.KEY_LEFT), la tortuga girará a la izquierda con una velocidad angular de 2.0.<br>
+◦ Si es la flecha hacia la derecha (curses.KEY_RIGHT), la tortuga girará a la derecha con una velocidad angular de -2.0.<br>
+◦ elif key == ord('t'): Si se presiona la tecla 'c', se llama a la función clear_trail() para limpiar la trayectoria de la tortuga.<br>
+◦ elif key == ord('q'):: Si se presiona la tecla 'q', el bucle termina y el programa se detiene.<br>
 
-self.publisher_.publish(msg): Publica el mensaje msg en el tópico /turtle1/cmd_vel para que la tortuga reciba las instrucciones de movimiento.
+self.publisher_.publish(msg): Publica el mensaje msg en el tópico /turtle1/cmd_vel para que la tortuga reciba las instrucciones de movimiento.<br>
 rclpy.spin_once(self, timeout_sec=0.1): Ejecuta una iteración de rclpy para procesar cualquier callback pendiente y esperar 0.1 segundos.
 
 ```
@@ -198,10 +202,10 @@ while rclpy.ok():
 ```
 **Definición de la función main**
 
-*rclpy.init(args=args)*: inicializa el entorno de ROS 2, permitiendo que el programa se conecte y se comunique con los nodos, servicios y tópicos dentro del sistema ROS 2.
-*node = TurtleController()*: crea una instancia del nodo TurtleController.
-*curses.wrapper(node.control_loop)*: llama a la función control_loop envuelta en curses.wrapper, que maneja la inicialización y el cierre correcto de la interfaz de texto.
-*node.destroy_node()*: en ROS 2, cuando un nodo deja de ser necesario o se va a cerrar, se debe destruir explícitamente utilizando el método destroy_node().
+*rclpy.init(args=args)*: inicializa el entorno de ROS 2, permitiendo que el programa se conecte y se comunique con los nodos, servicios y tópicos dentro del sistema ROS 2.<br>
+*node = TurtleController()*: crea una instancia del nodo TurtleController.<br>
+*curses.wrapper(node.control_loop)*: llama a la función control_loop envuelta en curses.wrapper, que maneja la inicialización y el cierre correcto de la interfaz de texto.<br>
+*node.destroy_node()*: en ROS 2, cuando un nodo deja de ser necesario o se va a cerrar, se debe destruir explícitamente utilizando el método destroy_node().<br>
 *rclpy.shutdown()*: es una función que detiene el sistema de comunicación de ROS 2. Esta función se debe llamar al final de un programa que utiliza ROS 2 para liberar todos los recursos que ROS 2 ha estado utilizando durante la ejecución.
 
 ```
