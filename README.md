@@ -176,6 +176,7 @@ def control_loop(self, stdscr):
         stdscr.addstr(0, 0, "↑ ↓ ← → para mover, 't' limpiar trayectoria, 'q' salir.")
         stdscr.refresh()
 ```
+![Indicaciones](Carpeta/trayectoria.jpg)
 
 **Creación del bucle principal de control**
 
