@@ -237,6 +237,6 @@ def main(args=None):
         node.destroy_node()
         rclpy.shutdown()
 ```
-
+**2. Dibujo automático de letras personalizadas**
 
 
