@@ -162,7 +162,7 @@ while rclpy.ok():
                 msg.angular.z = 2.0
             elif key == curses.KEY_RIGHT:
                 msg.angular.z = -2.0
-            elif key == ord('c'):
+            elif key == ord('t'):
                 self.clear_trail()
             elif key == ord('q'):
                 break
