@@ -1,12 +1,20 @@
 # Laboratorio No. 01 Robótica de Desarrollo Intro a ROS 2 Humble Turtlesim
 
+## Integrantes
+**Juan Manuel Rojas Luna**
+**jmrojasl@unal.edu.co**
+
+## Introducción
+
+A través de este laboratorio, se busca consolidar conocimientos clave sobre el sistema de comunicación de ROS 2, enfocándose en la manipulación de mensajes y la programación de control básico de robots móviles. Además, se desarrollarán habilidades de programación en Python, específicamente orientadas a la manipulación de mensajes ROS y la interacción con el entorno simulado. Para ello, se buscará controlar el movimiento de una tortuga virtual, respondiendo a comando enviados por teclado de velocidad en tiempo real.  Adcionalmente, se implementara un proceso para dibujar trayectorias defininas mediante secuencias programadas de movimientos. Esto permitirá al usuario definir y ejecutar patrones de desplazamiento predefinidos, proporcionando una visión más clara de cómo los comandos de control afectan el comportamiento del robot.
+
 ## Planteamiento del problema
 
 Dentro del **workspace** creado en clase (*my_turtle_controller*), se debe editar el archivo **move turtle.py**, el objetivo es controlar el movimiento de la tortuga en el simulador *turtlesim* mediante el teclado, cumpliendo con los siguientes requerimientos:
 
 ## Objetivos
 
-1. Permitir mover la tortuga de forma lineal y angular utilizando las flechas del teclado: <br>
+1. Permitir el movimiento lineal y angular de la tortuga mediante la creación de un nodo que, al recibir como entrada las flechas del teclado, controle su desplazamiento de la siguiente manera: <br>
 
   Acciones asignadas:<br>
 ◦ Flecha ↑: avanzar hacia adelante.<br>
@@ -14,9 +22,36 @@ Dentro del **workspace** creado en clase (*my_turtle_controller*), se debe edita
 ◦ Flecha ←: girar a la izquierda.<br>
 ◦ Flecha →: girar a la derecha.<br>
 
+## Diseño y funcionamiento
+
+**1. Control de movimiento manual**
+
+El controlador de movimiento manual inicia leyendo continuamente la entrada del teclado dentro de un bucle principal. Cada vez que se presiona una tecla, primero se verifica si corresponde a una flecha; si es así, se ejecuta una trayectoria y se imprime un mensaje antes de volver a leer el teclado. Si la tecla no es una flecha, se evalúa si es la letra 't'; en ese caso, el programa limpia la trayectoria y continúa esperando una nueva entrada. Si tampoco es 't', se verifica si la tecla es 'q'; si lo es, el programa finaliza su ejecución. Si la tecla presionada no corresponde a ninguna de las opciones anteriores, simplemente se ignora y se vuelve a leer una nueva tecla. 
+
+En el diseño del controlador, las teclas 't' y 'q' cumplen funciones específicas para mejorar el control y la flexibilidad del sistema. La tecla 't' permite limpiar la trayectoria registrada, lo cual es útil para reiniciar el recorrido sin necesidad de reiniciar todo el programa, facilitando así correcciones o nuevos intentos de ejecución. Por otro lado, la tecla 'q' ofrece una manera controlada de finalizar el programa, asegurando que la salida ocurra de forma segura y sin interrupciones forzadas. Estas funciones se crean en el diseño para brindar al usuario un mayor control sobre el flujo de ejecución.
+
+```mermaid
+---
+config:
+   theme: dark
+---
+flowchart TD
+    A(["Inicio"]) --> B["Tecla <-- Lectura teclado "]
+    B --> C{"Tecla == flecha?"}
+    C -- Sí --> D["Ejecuta trayectoria "]
+    C -- No --> E{"Tecla == 't'? "}
+    E -- Sí --> F["Limpiar trayectoria"]
+    F --> B
+    E -- No --> G{"Tecla == 'q'? "}
+    G -- Sí --> H(["Fin"])
+    G -- No --> B
+    D --> I["Imprimir mensaje"]
+    I --> B
+```
 ## Procedimiento
 
  **1. Control de movimiento manual**
+ 
  
 Dentro del **workspace** creado en clase (my_turtle_controller), se procedió a editar el archivo move_turtle.py para poder mover la tortuga utilizando las flechas del teclado. A continución se describe cada linea de código para la conformaciòn del control de movimiento manual.
 
@@ -31,7 +66,7 @@ Como primer paso, se agregaron nuevas librerías además de las que ya existían
 La libreria Empty fue utilizada para implementar una funciòn adicional que permita limpiar los trazos de las trayectorias marcadas en la pantalla de turtlesim.
  
  ```
-#Importaciòn de librerias
+#*******************************Importaciòn de librerias*******************************
 
 import rclpy
 from rclpy.node import Node
@@ -46,7 +81,7 @@ Se definió la clase **TurtleController**, la cual heredó de la clase **Node**,
 
 *def __init__(self)*: inicializa el objeto de la clase **TurtleController** mediante el método especial, el cual actúa como el constructor de la clase.
 
-super().__init__('turtle_controller')*: dentro del constructor, se invoca el constructor de la clase base **Node**  con *super().*. En este caso, 'turtle_controller' fue el nombre asignado al nodo dentro de ROS.
+*super().__init__('turtle_controller')*: dentro del constructor, se invoca el constructor de la clase base **Node**  con *super().*. En este caso, 'turtle_controller' fue el nombre asignado al nodo dentro de ROS.
 
 *self.create_publisher(Twist, '/turtle1/cmd_vel', 10)*: crea un publicador en la clase **TurtleController** utilizando el método. Este publicador permite que el nodo envie mensajes del tipo Twist al tópico */turtle1/cmd_vel*, el cual se utiliza para controlar el movimiento de la tortuga en el simulador. 
 
@@ -57,6 +92,7 @@ class TurtleController(Node):
         super().__init__('turtle_controller')
         self.publisher_ = self.create_publisher(Twist, '/turtle1/cmd_vel', 10)
 ```
+
 **Creación de cliente para limpiar la trayectoria**
 
 Para limpiar la pantalla de las trayectorias marcadas por la tortuga, se creó un cliente para interactuar con un servicio clear en ROS de la siguiente manera:
@@ -87,7 +123,9 @@ Se creó la función Limpiar trayectoria con los siguientes comandos:
 *self.get_logger().info(...)*: Registra un mensaje indicando que la trayectoria ha sido limpiada.
 
 
+
 ```
+#**************************Creación de la función Limpiar trayectoria (clear_trail)**********************************
 def clear_trail(self):
         req = Empty.Request()
         self.clear_client.call_async(req)
@@ -106,12 +144,12 @@ Para la función control_loop se efectuaron las siguentes lìneas de còdigo:
 *stdscr.clear()*: Borra todo el contenido de la ventana stdscr (la terminal), permite que los mensajes anteriores se borren y solo se muestren los nuevos.
 
 *stdscr.addstr(0, 0, "↑ ↓ ← → para mover, 'c' limpiar trayectoria, 'q' salir.")*: addstr escribe una cadena de texto en la ventana stdscr, donde el parámetro (0, 0) especifica las coordenadas de la pantalla donde se imprimirá el texto, en este caso, la esquina superior izquierda de la terminal.
-
 "↑ ↓ ← → para mover, 'c' limpiar trayectoria, 'q' salir." es el mensaje que se muestra en la pantalla, indicando las teclas que el usuario debe presionar para controlar la tortuga.
 
 *stdscr.refresh()*: actualiza la pantalla de la ventana stdscr después de realizar cambios, asegurando que el contenido recién añadido o actualizado sea visible para el usuario.
 
 ```
+#**************************Creación de la función control_loop**********************************
 def control_loop(self, stdscr):
         curses.cbreak()
         stdscr.nodelay(True)
@@ -124,31 +162,24 @@ def control_loop(self, stdscr):
 
 Se realiza el bucle principal de control teneiendo en cuenta el siguiente ciclo While:
 
-*while rclpy.ok()*: Este comando establece que el bucle continúa mientras ROS esté funcionando correctamente.
-
-*key = stdscr.getch()*: Lee la tecla presionada por el usuario desde la terminal.
-
-*msg = Twist()*: Crea un objeto Twist que se usará para enviar el mensaje de movimiento.
+*while rclpy.ok()*: Este comando establece que el bucle continúa mientras ROS esté funcionando correctamente.<br>
+*key = stdscr.getch()*: Lee la tecla presionada por el usuario desde la terminal.<br>
+*msg = Twist()*: Crea un objeto Twist que se usará para enviar el mensaje de movimiento.<br>
 
 Luego,se crea los comando a partir de instrucciones condicionales segun qué tecla fue presionada:
 
-◦ Si es la flecha hacia arriba (curses.KEY_UP), la tortuga se moverá hacia adelante con una velocidad lineal de 2.0.
+◦ Si es la flecha hacia arriba (curses.KEY_UP), la tortuga se moverá hacia adelante con una velocidad lineal de 2.0.<br>
+◦ Si es la flecha hacia abajo (curses.KEY_DOWN), la tortuga se moverá hacia atrás con una velocidad lineal de -2.0.<br>
+◦ Si es la flecha hacia la izquierda (curses.KEY_LEFT), la tortuga girará a la izquierda con una velocidad angular de 2.0.<br>
+◦ Si es la flecha hacia la derecha (curses.KEY_RIGHT), la tortuga girará a la derecha con una velocidad angular de -2.0.<br>
+◦ elif key == ord('t'): Si se presiona la tecla 'c', se llama a la función clear_trail() para limpiar la trayectoria de la tortuga.<br>
+◦ elif key == ord('q'):: Si se presiona la tecla 'q', el bucle termina y el programa se detiene.<br>
 
-◦ Si es la flecha hacia abajo (curses.KEY_DOWN), la tortuga se moverá hacia atrás con una velocidad lineal de -2.0.
-
-◦ Si es la flecha hacia la izquierda (curses.KEY_LEFT), la tortuga girará a la izquierda con una velocidad angular de 2.0.
-
-◦ Si es la flecha hacia la derecha (curses.KEY_RIGHT), la tortuga girará a la derecha con una velocidad angular de -2.0.
-
-◦ elif key == ord('t'): Si se presiona la tecla 'c', se llama a la función clear_trail() para limpiar la trayectoria de la tortuga.
-
-◦ elif key == ord('q'):: Si se presiona la tecla 'q', el bucle termina y el programa se detiene.
-
-◦ self.publisher_.publish(msg): Publica el mensaje msg en el tópico /turtle1/cmd_vel para que la tortuga reciba las instrucciones de movimiento.
-
-◦ rclpy.spin_once(self, timeout_sec=0.1): Ejecuta una iteración de rclpy para procesar cualquier callback pendiente y esperar 0.1 segundos.
+self.publisher_.publish(msg): Publica el mensaje msg en el tópico /turtle1/cmd_vel para que la tortuga reciba las instrucciones de movimiento.<br>
+rclpy.spin_once(self, timeout_sec=0.1): Ejecuta una iteración de rclpy para procesar cualquier callback pendiente y esperar 0.1 segundos.
 
 ```
+#**************************Creación del bucle principal de control**********************************
 while rclpy.ok():
             key = stdscr.getch()
             msg = Twist()
@@ -161,7 +192,7 @@ while rclpy.ok():
                 msg.angular.z = 2.0
             elif key == curses.KEY_RIGHT:
                 msg.angular.z = -2.0
-            elif key == ord('c'):
+            elif key == ord('t'):
                 self.clear_trail()
             elif key == ord('q'):
                 break
@@ -171,17 +202,14 @@ while rclpy.ok():
 ```
 **Definición de la función main**
 
-*rclpy.init(args=args)*: inicializa el entorno de ROS 2, permitiendo que el programa se conecte y se comunique con los nodos, servicios y tópicos dentro del sistema ROS 2.
-
-*node = TurtleController()*: crea una instancia del nodo TurtleController.
-
-*curses.wrapper(node.control_loop)*: llama a la función control_loop envuelta en curses.wrapper, que maneja la inicialización y el cierre correcto de la interfaz de texto.
-
-*node.destroy_node()*: en ROS 2, cuando un nodo deja de ser necesario o se va a cerrar, se debe destruir explícitamente utilizando el método destroy_node().
-
+*rclpy.init(args=args)*: inicializa el entorno de ROS 2, permitiendo que el programa se conecte y se comunique con los nodos, servicios y tópicos dentro del sistema ROS 2.<br>
+*node = TurtleController()*: crea una instancia del nodo TurtleController.<br>
+*curses.wrapper(node.control_loop)*: llama a la función control_loop envuelta en curses.wrapper, que maneja la inicialización y el cierre correcto de la interfaz de texto.<br>
+*node.destroy_node()*: en ROS 2, cuando un nodo deja de ser necesario o se va a cerrar, se debe destruir explícitamente utilizando el método destroy_node().<br>
 *rclpy.shutdown()*: es una función que detiene el sistema de comunicación de ROS 2. Esta función se debe llamar al final de un programa que utiliza ROS 2 para liberar todos los recursos que ROS 2 ha estado utilizando durante la ejecución.
 
 ```
+#**************************Definición de la función main**********************************
 def main(args=None):
     rclpy.init(args=args)
     node = TurtleController()
@@ -194,4 +222,5 @@ def main(args=None):
         rclpy.shutdown()
 ```
 
-# Diseño y funcionamiento
+
+
