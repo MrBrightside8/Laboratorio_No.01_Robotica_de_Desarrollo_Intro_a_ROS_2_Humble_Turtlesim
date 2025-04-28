@@ -38,6 +38,7 @@ Durante la ejecución de Turtlesim, un inconveniente común es que, a medida que
 
 Ahora se describe el funcionamiento de nuestro diseño: El controlador de movimiento manual inicia leyendo continuamente la entrada del teclado dentro de un bucle principal. Cada vez que se presiona una tecla, primero se verifica si corresponde a una flecha; si es así, se ejecuta una trayectoria y se imprime un mensaje antes de volver a leer el teclado. Si la tecla no es una flecha, se evalúa si es la letra 't'; en ese caso, el programa limpia la trayectoria y continúa esperando una nueva entrada. Si tampoco es 't', se verifica si la tecla es 'q'; si lo es, el programa finaliza su ejecución. Si la tecla presionada no corresponde a ninguna de las opciones anteriores, simplemente se ignora y se vuelve a leer una nueva tecla. 
 
+A continuación, se presenta el diagrama de flujo que describe el funcionamiento del controlador de movimiento manual:
 
 ```mermaid
 ---
