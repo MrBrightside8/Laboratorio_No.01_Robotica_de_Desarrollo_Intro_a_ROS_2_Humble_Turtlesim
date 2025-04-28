@@ -22,6 +22,10 @@ Dentro del **workspace** creado en clase (*my_turtle_controller*), se debe edita
 ◦ Flecha ←: girar a la izquierda.<br>
 ◦ Flecha →: girar a la derecha.<br>
 
+## Restricción importante:
+• Gestionar el movimiento de la tortuga exclusivamente desde el script *move turtle.py*.
+• No se puede utilizar el nodo *turtle_teleop_key* para el control con teclado.
+
 ## Diseño y funcionamiento
 
 **1. Control de movimiento manual**
@@ -235,6 +239,6 @@ def main(args=None):
         node.destroy_node()
         rclpy.shutdown()
 ```
-
+Adicionalmente, se anexa el script con el código completo para el controlador manual de movimiento:
 
 
