@@ -3,6 +3,8 @@
 ## Integrantes
 **Juan Manuel Rojas Luna**
 **jmrojasl@unal.edu.co**
+**Santiago Mariño Cortés**
+**smarinoc@unal.edu.co**
 
 ## Introducción
 
