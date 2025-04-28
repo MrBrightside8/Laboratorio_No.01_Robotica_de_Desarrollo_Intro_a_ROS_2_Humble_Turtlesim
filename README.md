@@ -26,9 +26,18 @@ Dentro del **workspace** creado en clase (*my_turtle_controller*), se debe edita
 
 **1. Control de movimiento manual**
 
-El controlador de movimiento manual inicia leyendo continuamente la entrada del teclado dentro de un bucle principal. Cada vez que se presiona una tecla, primero se verifica si corresponde a una flecha; si es así, se ejecuta una trayectoria y se imprime un mensaje antes de volver a leer el teclado. Si la tecla no es una flecha, se evalúa si es la letra 't'; en ese caso, el programa limpia la trayectoria y continúa esperando una nueva entrada. Si tampoco es 't', se verifica si la tecla es 'q'; si lo es, el programa finaliza su ejecución. Si la tecla presionada no corresponde a ninguna de las opciones anteriores, simplemente se ignora y se vuelve a leer una nueva tecla. 
+El controlador de movimiento manual de la tortuga en Turtlesim está diseñado para utilizar el teclado, específicamente las flechas direccionales. Existen varias formas de configurar este control. Una de ellas consiste en que, al oprimir una flecha, la tortuga se mueva de manera continua en la dirección indicada hasta que se presione una flecha diferente para cambiar su trayectoria.
 
-En el diseño del controlador, las teclas 't' y 'q' cumplen funciones específicas para mejorar el control y la flexibilidad del sistema. La tecla 't' permite limpiar la trayectoria registrada, lo cual es útil para reiniciar el recorrido sin necesidad de reiniciar todo el programa, facilitando así correcciones o nuevos intentos de ejecución. Por otro lado, la tecla 'q' ofrece una manera controlada de finalizar el programa, asegurando que la salida ocurra de forma segura y sin interrupciones forzadas. Estas funciones se crean en el diseño para brindar al usuario un mayor control sobre el flujo de ejecución.
+Sin embargo, este diseño presenta una limitación importante: como el movimiento de la tortuga está restringido por el área de la pantalla de Turtlesim, si no se modifica la dirección oportunamente, la tortuga inevitablemente chocará contra una de las paredes, ya que continuará avanzando indefinidamente en la trayectoria inicial.
+
+Una forma de mejorar este diseño es implementar un movimiento discreto, es decir, que al presionar una flecha la tortuga se desplace una distancia mínima en trayectoria lineal o realice una rotación angular limitada. Este enfoque permite movimientos más controlados y evita que la tortuga choque si no se cambia su dirección de inmediato.
+
+Para que esta mejora sea efectiva, es indispensable que el desplazamiento por pulsación sea pequeño, lo que permitirá tener una mejor resolución y precisión en el movimiento de la tortuga sobre la pantalla.
+
+Durante la ejecución de Turtlesim, un inconveniente común es que, a medida que la tortuga se desplaza, se va imprimiendo su trayectoria sobre la pantalla. Cuando se generan desplazamientos prolongados, esto puede provocar que las trayectorias se superpongan, dificultando la visualización clara del movimiento actual. Para mantener una pantalla limpia y mejorar la experiencia de control, se implementó la tecla 't', que permite borrar las trayectorias anteriores sin necesidad de reiniciar el programa. Además, se decidió modificar el comando de salida, reemplazando la combinación tradicional Ctrl + C por la tecla 'q' para facilitar un cierre más rápido y sencillo. En este diseño, las teclas 't' y 'q' cumplen funciones específicas que aumentan la flexibilidad y el control del sistema: la primera permite limpiar la trayectoria registrada, facilitando nuevos intentos o correcciones, y la segunda proporciona una forma segura y controlada de finalizar la ejecución del programa.
+
+Ahora se describe el funcionamiento de nuestro diseño: El controlador de movimiento manual inicia leyendo continuamente la entrada del teclado dentro de un bucle principal. Cada vez que se presiona una tecla, primero se verifica si corresponde a una flecha; si es así, se ejecuta una trayectoria y se imprime un mensaje antes de volver a leer el teclado. Si la tecla no es una flecha, se evalúa si es la letra 't'; en ese caso, el programa limpia la trayectoria y continúa esperando una nueva entrada. Si tampoco es 't', se verifica si la tecla es 'q'; si lo es, el programa finaliza su ejecución. Si la tecla presionada no corresponde a ninguna de las opciones anteriores, simplemente se ignora y se vuelve a leer una nueva tecla. 
+
 
 ```mermaid
 ---
@@ -175,8 +184,8 @@ Luego,se crea los comando a partir de instrucciones condicionales segun qué tec
 ◦ elif key == ord('t'): Si se presiona la tecla 'c', se llama a la función clear_trail() para limpiar la trayectoria de la tortuga.<br>
 ◦ elif key == ord('q'):: Si se presiona la tecla 'q', el bucle termina y el programa se detiene.<br>
 
-self.publisher_.publish(msg): Publica el mensaje msg en el tópico /turtle1/cmd_vel para que la tortuga reciba las instrucciones de movimiento.<br>
-rclpy.spin_once(self, timeout_sec=0.1): Ejecuta una iteración de rclpy para procesar cualquier callback pendiente y esperar 0.1 segundos.
+*self.publisher_.publish(msg)*: Publica el mensaje msg en el tópico /turtle1/cmd_vel para que la tortuga reciba las instrucciones de movimiento.<br>
+*rclpy.spin_once(self, timeout_sec=0.1)*: Ejecuta una iteración de rclpy para procesar cualquier callback pendiente y esperar 0.1 segundos.
 
 ```
 #**************************Creación del bucle principal de control**********************************
