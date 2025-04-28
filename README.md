@@ -247,6 +247,7 @@ def main(args=None):
         rclpy.shutdown()
 ```
 **2. Dibujo automático de letras personalizadas**
+El principio de captura de información de las teclas es similar al del punto anterior, pero ahora se utilizan las letras del teclado, por lo que no hay necesidad de convertir el valor de las flechas, ya que se puede hacer la comparación directa con el carácter correspondiente a cada tecla, otra diferencia es que ahora cada tecla tiene asociada una función para dibujar la letra, mediante un conjunto de movimientos secuenciales, adicionalmente se mantiene la implementación anterior de las funciones para borrar y terminar ejecución del control de movimiento de la tortuga (tecla x y tecla q respectivamente), la primera se mantiene aunque al finalizar la letra se borran las trayectorias de la pantalla, la tortuga se debe desplazar al origen para asegurar que al hacer la siguiente figura no se salga de los límites de la panta, aunque este movimiento de traslación al origen deja un trazo, aquí la importancia de la letra x para eliminarlo
 
 ```mermaid
 ---
