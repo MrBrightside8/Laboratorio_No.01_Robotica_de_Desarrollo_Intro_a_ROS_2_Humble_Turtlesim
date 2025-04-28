@@ -256,6 +256,30 @@ $\sqrt{(x-x_0)^2+(y-y_0)^2}$
 
 Dónde $x_0, y_0$ representan el punto de origen dónde la tortuga comienza cada movimiento, mientrás que x y y són las posiciones en las que se encuentra actualmente la tortuga, cuándo se llega a la distancia solicitada termina el movimiento y se procede a ejecutar la siguiente instrucción, en cuanto a las rotaciones, se generan limitando también el valor del ángulo a rotar de acuerdo a lo que se encesite. Después de completar la figura de la letra y si se ha presionado otra tecla la pantalla se borra y la tortuga se dirige al punto de inicio dónde estaba al principio el programa, para comenzar con la nueva letra. En cuánto a la tecla q tiene la misma funcionalidad que en el punto anterior, al igual que la función de borrar que ahora está asignada a la tecla x.
 
+Las librerías usadas fueron las siguientes:
+
+
+```
+# Importación de librerías necesarias
+import rclpy #Librerìa de ros2 para programar nodos
+from rclpy.node import Node
+from geometry_msgs.msg import Twist #velocidad lineal y angular de la toruga
+from std_srvs.srv import Empty #borrrar pantalla
+from turtlesim.srv import TeleportAbsolute #Hace que la tortuga aparezca en un punto especìfico
+from turtlesim.msg import Pose #contiene la posiciòn y orientaciòn de la tortuga
+import curses #lee entradas del teclado
+import math #funciones y variables matemàticas
+
+```
+La única librería adiconal a la del primer punto es math que se usa para calcular la distancia recorrida por la tortuga con la fórmula hypot y para el uso de pi.
+
+Función para actualizar la posición de la tortuga cuándo se mueve:
+```
+def pose_callback(self, pose_message): #actualiza la posiciòn de la tortuga
+        self.x = pose_message.x
+        self.y = pose_message.y
+        self.theta = pose_message.theta
+```
 ```mermaid
 ---
 config:
