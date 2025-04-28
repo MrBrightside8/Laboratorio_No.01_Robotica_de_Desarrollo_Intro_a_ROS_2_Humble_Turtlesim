@@ -202,12 +202,13 @@ while rclpy.ok():
 ```
 **Definición de la función main**
 
-*rclpy.init(args=args)*: inicializa el entorno de ROS 2, permitiendo que el programa se conecte y se comunique con los nodos, servicios y tópicos dentro del sistema ROS 2.<br>
-*node = TurtleController()*: crea una instancia del nodo TurtleController.<br>
+*rclpy.init(args=args)*: inicializa el entorno de ROS 2, permitiendo que el programa se conecte y se comunique con los nodos, servicios y tópicos dentro del sistema ROS 2.
 
-*curses.wrapper(node.control_loop)*: llama a la función control_loop envuelta en curses.wrapper, que maneja la inicialización y el cierre correcto de la interfaz de texto.<br>
+*node = TurtleController()*: crea una instancia del nodo TurtleController.
 
-*node.destroy_node()*: en ROS 2, cuando un nodo deja de ser necesario o se va a cerrar, se debe destruir explícitamente utilizando el método destroy_node().<br>
+*curses.wrapper(node.control_loop)*: llama a la función control_loop envuelta en curses.wrapper, que maneja la inicialización y el cierre correcto de la interfaz de texto.
+
+*node.destroy_node()*: en ROS 2, cuando un nodo deja de ser necesario o se va a cerrar, se debe destruir explícitamente utilizando el método destroy_node().
 
 *rclpy.shutdown()*: es una función que detiene el sistema de comunicación de ROS 2. Esta función se debe llamar al final de un programa que utiliza ROS 2 para liberar todos los recursos que ROS 2 ha estado utilizando durante la ejecución.
 
