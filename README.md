@@ -246,22 +246,22 @@ config:
 ---
 flowchart TD
     A(["inicio"]) --> n1["self.letter&lt;---Lectura del teclado"]
-    n1 --> B{"self.letter==M"} & n39["self.letter==x"] & n41["self.letter==q"]
+    n1 --> B{"self.letter=='m'"} & n39["self.letter=='x'"] & n41["self.letter=='q'"]
     B --> n2["Sí"] & n3["No"]
     n2 --> C["Dibujar la M"]
-    n3 --> n4["self.letter==J"]
+    n3 --> n4["self.letter=='j'"]
     n4 --> n7["Sí"] & n8["No"]
     n7 --> n18["Dibujar la J"]
-    n8 --> n15@{ label: "self.letter=='L'" }
+    n8 --> n15@{ label: "self.letter=='l'" }
     n15 --> n9["Sí"] & n13["No"]
     n9 --> n19["Dibujar la R"]
-    n13 --> n16@{ label: "self.letter=='R'" }
+    n13 --> n16@{ label: "self.letter=='r'" }
     n16 --> n10["Sí"] & n14["No"]
     n10 --> n20["Dibujar la C"]
-    n14 --> n17@{ label: "self.letter=='C'" }
+    n14 --> n17@{ label: "self.letter=='c'" }
     n17 --> n11["Sí"] & n21["No"]
     n11 --> n22["Dibujar la S"]
-    n21 --> n23@{ label: "self.letter=='S'" }
+    n21 --> n23@{ label: "self.letter=='s'" }
     C --> n24["Dibujo terminado?"]
     n18 --> n31["Borrar pantalla y regresar al origen"]
     n31 --> n1
