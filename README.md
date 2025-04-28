@@ -22,7 +22,7 @@ Dentro del **workspace** creado en clase (*my_turtle_controller*), se debe edita
 ◦ Flecha ←: girar a la izquierda.<br>
 ◦ Flecha →: girar a la derecha.<br>
 
-![Turtlesim](Laboratorio_No.01_Robotica_de_Desarrollo_Intro_a_ROS_2_Humble_Turtlesim/Carpeta/turtle.png)
+![Turtlesim](Carpeta/turtle.png)
 
 ## Restricción importante:
 • Gestionar el movimiento de la tortuga exclusivamente desde el script *move_turtle.py*.
