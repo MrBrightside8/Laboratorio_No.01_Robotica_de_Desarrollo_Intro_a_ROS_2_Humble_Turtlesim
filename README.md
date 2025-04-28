@@ -24,6 +24,15 @@ Dentro del **workspace** creado en clase (*my_turtle_controller*), se debe edita
 ◦ Flecha ←: girar a la izquierda.<br>
 ◦ Flecha →: girar a la derecha.<br>
 
+2. Implementar funciones para que la tortuga dibuje las iniciales de los miembros del equipo de trabajo (S,M,C,J,M,R,L) al presionar la tecla correspondiente a cada letra:
+
+◦ Tecla s: Dibuja la letra S. <br>
+◦ Tecla m: Dibuja la letra M. <br>
+◦ Tecla c: Dibuja la letra C. <br>
+◦ Tecla j: Dibuja la letra J. <br>
+◦ Tecla r: Dibuja la letra R. <br>
+◦ Tecla l: Dibuja la letra L. <br>
+
 ## Diseño y funcionamiento
 
 **1. Control de movimiento manual**
