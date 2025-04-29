@@ -4,6 +4,9 @@
 **Juan Manuel Rojas Luna**
 **jmrojasl@unal.edu.co**
 
+**Santiago Mariño Cortés**
+**smarinoc@unal.edu.co**
+
 ## Introducción
 
 A través de este laboratorio, se busca consolidar conocimientos clave sobre el sistema de comunicación de ROS 2, enfocándose en la manipulación de mensajes y la programación de control básico de robots móviles. Además, se desarrollarán habilidades de programación en Python, específicamente orientadas a la manipulación de mensajes ROS y la interacción con el entorno simulado. Para ello, se buscará controlar el movimiento de una tortuga virtual, respondiendo a comando enviados por teclado de velocidad en tiempo real.  Adcionalmente, se implementara un proceso para dibujar trayectorias defininas mediante secuencias programadas de movimientos. Esto permitirá al usuario definir y ejecutar patrones de desplazamiento predefinidos, proporcionando una visión más clara de cómo los comandos de control afectan el comportamiento del robot.
