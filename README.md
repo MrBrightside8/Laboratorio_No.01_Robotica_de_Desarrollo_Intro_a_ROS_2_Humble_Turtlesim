@@ -412,8 +412,10 @@ flowchart TD
     n35@{ shape: text}
 
 ```
+Adicionalmente, se anexa el script con el código completo para el segundo punto, el cual se puede consultar [aquí](move_turtle2.py) 
 
 ## Conclusiones
+
 
 Durante el laboratorio se logró entender la arquitectura fundamental de ROS 2, incluyendo conceptos clave como nodos, tópicos, servicios y mensajes. Esto permitió conectar adecuadamente un nodo programado en Python con el simulador Turtlesim, cumpliendo así con los requisitos planteados.
 
