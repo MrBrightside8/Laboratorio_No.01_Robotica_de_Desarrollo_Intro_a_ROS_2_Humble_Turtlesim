@@ -25,20 +25,20 @@ Dentro del **workspace** creado en clase (*my_turtle_controller*), se debe edita
 ◦ Flecha ←: girar a la izquierda.<br>
 ◦ Flecha →: girar a la derecha.<br>
 
+2. Implementar funciones para que la tortuga dibuje las iniciales de los miembros del equipo de trabajo (S,M,C,J,M,R,L) al presionar la tecla correspondiente a cada letra:
 
-
-
-
-
-
-
-
-
+◦ Tecla s: Dibuja la letra S. <br>
+◦ Tecla m: Dibuja la letra M. <br>
+◦ Tecla c: Dibuja la letra C. <br>
+◦ Tecla j: Dibuja la letra J. <br>
+◦ Tecla r: Dibuja la letra R. <br>
+◦ Tecla l: Dibuja la letra L. <br>
 
 ## Restricción importante:
 • Gestionar el movimiento de la tortuga exclusivamente desde el script *move_turtle.py*.
 
 • No se puede utilizar el nodo *turtle_teleop_key* para el control con teclado.
+
 
 ## Diseño y funcionamiento
 
@@ -253,12 +253,168 @@ def main(args=None):
         node.destroy_node()
         rclpy.shutdown()
 ```
+
 De esta forma se obtiene el codigo para el control de movimiento manual que cumple con los requerimiento solicitados.
 
 ![Turtlesim](Carpeta/Punto_1.jpg)
 
-Adicionalmente, se anexa el script con el código completo para el controlador de movimiento manual, el cual puedes consultar [aquí](Laboratorio_No.01_Robotica_de_Desarrollo_Intro_a_ROS_2_Humble_Turtlesim/move_turtle.py).
+Adicionalmente, se anexa el script con el código completo para el controlador de movimiento manual, el cual puedes consultar [aquí](Laboratorio_No.01_Robotica_de_Desarrollo_Intro_a_ROS_2_Humble_Turtlesim/move_turtle.py
 
+
+
+**2. Dibujo automático de letras personalizadas**
+
+El principio de captura de información de las teclas es similar al del punto anterior, pero ahora se utilizan las letras del teclado, por lo que no hay necesidad de convertir el valor de las flechas, ya que se puede hacer la comparación directa con el carácter correspondiente a cada tecla, otra diferencia es que ahora cada tecla tiene asociada una función para dibujar la letra, mediante un conjunto de movimientos secuenciales, adicionalmente se mantiene la implementación anterior de las funciones para borrar y terminar ejecución del control de movimiento de la tortuga (tecla x y tecla q respectivamente), la primera se mantiene aunque al finalizar la letra se borran las trayectorias de la pantalla, la tortuga se debe desplazar al origen para asegurar que al hacer la siguiente figura no se salga de los límites de la panta, aunque este movimiento de traslación al origen deja un trazo, aquí la importancia de la letra x para eliminarlo.
+
+En cuánto al funcionamiento del programa, se inicia leyendo el valor de la tecla que presiona el usuario, y de acuerdo a esto se llama a la función correspondiente a cada letra, dicha función contiene una secuencia de movimientos para el dibujo de la figura, en dónde a cada paso se está verificando que procedimiento está ejecutando la tortuga y de acuerdo a este estado poder ejecutar cada acción necesaria para poder graficar las letras. Debido a que la tortuga sigue de largo si no se le pone un límite a la trayectoria, cada trazo tendrá una dimensión definida mediante la fórmula:
+
+$\sqrt{(x-x_0)^2+(y-y_0)^2}$
+
+Dónde $x_0, y_0$ representan el punto de origen dónde la tortuga comienza cada movimiento, mientrás que x y y són las posiciones en las que se encuentra actualmente la tortuga, cuándo se llega a la distancia solicitada termina el movimiento y se procede a ejecutar la siguiente instrucción, en cuanto a las rotaciones, se generan limitando también el valor del ángulo a rotar de acuerdo a lo que se encesite. Después de completar la figura de la letra y si se ha presionado otra tecla la pantalla se borra y la tortuga se dirige al punto de inicio dónde estaba al principio el programa, para comenzar con la nueva letra. En cuánto a la tecla q tiene la misma funcionalidad que en el punto anterior, al igual que la función de borrar que ahora está asignada a la tecla x.
+
+Las librerías usadas fueron las siguientes:
+
+
+```
+# Importación de librerías necesarias
+import rclpy #Librerìa de ros2 para programar nodos
+from rclpy.node import Node
+from geometry_msgs.msg import Twist #velocidad lineal y angular de la toruga
+from std_srvs.srv import Empty #borrrar pantalla
+from turtlesim.srv import TeleportAbsolute #Hace que la tortuga aparezca en un punto especìfico
+from turtlesim.msg import Pose #contiene la posiciòn y orientaciòn de la tortuga
+import curses #lee entradas del teclado
+import math #funciones y variables matemàticas
+
+```
+La única librería adiconal a la del primer punto es math que se usa para calcular la distancia recorrida por la tortuga con la fórmula hypot y para el uso de pi.
+
+Función para actualizar la posición de la tortuga cuándo se mueve:
+```
+def pose_callback(self, pose_message): #actualiza la posiciòn de la tortuga
+        self.x = pose_message.x
+        self.y = pose_message.y
+        self.theta = pose_message.theta
+```
+Función para limpiar pantalla cuándo se le haga la solicitud de hacerlo.
+```
+def clear_trail(self):
+        req = Empty.Request() #Limpiar pantalla
+        self.clear_client.call_async(req)
+        self.get_logger().info('¡Trayectoria limpiada!')
+```
+
+```
+Función para teletransportar la tortuga a una posición x,y con ángulo theta:
+
+def teleport_to_start(self, x, y, theta):
+        req = TeleportAbsolute.Request()
+        req.x = x #Teletransporta la tortuga a la direcciòn (x,y)
+        req.y = y
+        req.theta = theta
+        self.teleport_client.call_async(req)
+```
+Función que normaliza el ángulo para trabajar valores entre pi y -pi:
+```
+ def normalize_angle(self, angle):
+        while angle > math.pi:
+            angle -= 2 * math.pi
+        while angle < -math.pi: #hace que el àngulo estè en un rango entre pi y -pi
+            angle += 2 * math.pi
+        return angle
+
+```
+Función que hace que se inicie el dibujo de la letra, limpiando la pantalla y moviendo la tortuga al punto inicial, extrae la letra digitada por el teclado y genera un estado start_letra  que determina que función se de be llamar de acuerdo a la letra seleccionada.
+```
+def start_drawing(self, letter):
+        self.clear_trail() #limpia la pantalla
+        self.teleport_to_start(5.544445, 5.544445, 0.0) #posiciòn inicial
+        self.letter = letter #almacena la letra
+        self.stage = f'start_{letter.lower()}' #estado inicial
+        if self.timer:
+            self.timer.cancel()
+        self.timer = self.create_timer(0.1, self.control_loop)
+```
+Bucle de control, y condicionales que llaman a la función de la letra, de acuerdo a la tecla presionada, el publisher muestra la velocidad de la tortuga.
+```
+ def control_loop(self): #Bucle de control
+        msg = Twist()
+
+        if self.letter == 'M':
+            self.draw_M(msg)
+        elif self.letter == 'J':
+            self.draw_J(msg)
+        elif self.letter == 'L':
+            self.draw_L(msg)
+        elif self.letter == 'R':
+            self.draw_R(msg)
+
+        self.publisher_.publish(msg) #mensaje de velocidad de la otrtuga
+```
+```
+
+```
+
+El diagrama de flujo del programa es el siguiente:
+```mermaid
+---
+config:
+  theme: redux
+---
+flowchart TD
+    A(["inicio"]) --> n1["self.letter&lt;---Lectura del teclado"]
+    n1 --> B{"self.letter==M"} & n39["self.letter==x"] & n41["self.letter==q"]
+    B --> n2["Sí"] & n3["No"]
+    n2 --> C["Dibujar la M"]
+    n3 --> n4["self.letter==J"]
+    n4 --> n7["Sí"] & n8["No"]
+    n7 --> n18["Dibujar la J"]
+    n8 --> n15@{ label: "self.letter=='l'" }
+    n15 --> n9["Sí"] & n13["No"]
+    n9 --> n19["Dibujar la L"]
+    n13 --> n16@{ label: "self.letter=='R'" }
+    n16 --> n10["Sí"] & n14["No"]
+    n10 --> n20["Dibujar la R"]
+    n14 --> n17@{ label: "self.letter=='C'" }
+    n17 --> n11["Sí"] & n21["No"]
+    n11 --> n22["Dibujar la C"]
+    n21 --> n23@{ label: "self.letter=='S'" }
+    n18 --> n31["Borrar pantalla y regresar al origen"]
+    n31 --> n1
+    n19 --> n32["Borrar pantalla y regresar al origen"]
+    n32 --> n1
+    n20 --> n33["Borrar pantalla y regresar al origene"]
+    n33 --> n1
+    n22 --> n34["Borrar pantalla y regresar al origen"]
+    n34 --> n1
+    n23 --> n35["Sí"]
+    n35 --> n36["Dibujar la S"]
+    n36 --> n37["Borrar pantalla y regresar al origen"]
+    n37 --> n1
+    n39 --> n40["Borrar la pantalla"]
+    n40 --> n1
+    n41 --> n42(["Fin"])
+    C --> n43["Borrar pantalla y regresar al origen"]
+    n43 --> n1
+    n1@{ shape: rect}
+    n2@{ shape: text}
+    n3@{ shape: text}
+    n4@{ shape: diam}
+    n7@{ shape: text}
+    n8@{ shape: text}
+    n15@{ shape: diam}
+    n9@{ shape: text}
+    n13@{ shape: text}
+    n16@{ shape: diam}
+    n10@{ shape: text}
+    n14@{ shape: text}
+    n17@{ shape: diam}
+    n11@{ shape: text}
+    n21@{ shape: text}
+    n23@{ shape: diam}
+    n35@{ shape: text}
+
+```
 
 ## Conclusiones
 
