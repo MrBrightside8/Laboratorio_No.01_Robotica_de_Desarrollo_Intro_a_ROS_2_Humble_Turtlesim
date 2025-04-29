@@ -1,8 +1,9 @@
-# Laboratorio No. 01 Robótica de Desarrollo Intro a ROS 2 Humble Turtlesim
+# Laboratorio No. 01 Robótica de Desarrollo Intro a ROS 2 Humble Turtlesim 
 
 ## Integrantes
 **Juan Manuel Rojas Luna**
 **jmrojasl@unal.edu.co**
+
 **Santiago Mariño Cortés**
 **smarinoc@unal.edu.co**
 
@@ -33,11 +34,19 @@ Dentro del **workspace** creado en clase (*my_turtle_controller*), se debe edita
 ◦ Tecla r: Dibuja la letra R. <br>
 ◦ Tecla l: Dibuja la letra L. <br>
 
+## Restricción importante:
+• Gestionar el movimiento de la tortuga exclusivamente desde el script *move_turtle.py*.
+
+• No se puede utilizar el nodo *turtle_teleop_key* para el control con teclado.
+
+
 ## Diseño y funcionamiento
 
 **1. Control de movimiento manual**
 
 El controlador de movimiento manual de la tortuga en Turtlesim está diseñado para utilizar el teclado, específicamente las flechas direccionales. Existen varias formas de configurar este control. Una de ellas consiste en que, al oprimir una flecha, la tortuga se mueva de manera continua en la dirección indicada hasta que se presione una flecha diferente para cambiar su trayectoria.
+
+![Turtlesim](Carpeta/turtle.png)
 
 Sin embargo, este diseño presenta una limitación importante: como el movimiento de la tortuga está restringido por el área de la pantalla de Turtlesim, si no se modifica la dirección oportunamente, la tortuga inevitablemente chocará contra una de las paredes, ya que continuará avanzando indefinidamente en la trayectoria inicial.
 
@@ -46,6 +55,8 @@ Una forma de mejorar este diseño es implementar un movimiento discreto, es deci
 Para que esta mejora sea efectiva, es indispensable que el desplazamiento por pulsación sea pequeño, lo que permitirá tener una mejor resolución y precisión en el movimiento de la tortuga sobre la pantalla.
 
 Durante la ejecución de Turtlesim, un inconveniente común es que, a medida que la tortuga se desplaza, se va imprimiendo su trayectoria sobre la pantalla. Cuando se generan desplazamientos prolongados, esto puede provocar que las trayectorias se superpongan, dificultando la visualización clara del movimiento actual. Para mantener una pantalla limpia y mejorar la experiencia de control, se implementó la tecla 't', que permite borrar las trayectorias anteriores sin necesidad de reiniciar el programa. Además, se decidió modificar el comando de salida, reemplazando la combinación tradicional Ctrl + C por la tecla 'q' para facilitar un cierre más rápido y sencillo. En este diseño, las teclas 't' y 'q' cumplen funciones específicas que aumentan la flexibilidad y el control del sistema: la primera permite limpiar la trayectoria registrada, facilitando nuevos intentos o correcciones, y la segunda proporciona una forma segura y controlada de finalizar la ejecución del programa.
+
+![Turtle_Clear](Carpeta/turtle_clear.jpg)
 
 Ahora se describe el funcionamiento de nuestro diseño: El controlador de movimiento manual inicia leyendo continuamente la entrada del teclado dentro de un bucle principal. Cada vez que se presiona una tecla, primero se verifica si corresponde a una flecha; si es así, se ejecuta una trayectoria y se imprime un mensaje antes de volver a leer el teclado. Si la tecla no es una flecha, se evalúa si es la letra 't'; en ese caso, el programa limpia la trayectoria y continúa esperando una nueva entrada. Si tampoco es 't', se verifica si la tecla es 'q'; si lo es, el programa finaliza su ejecución. Si la tecla presionada no corresponde a ninguna de las opciones anteriores, simplemente se ignora y se vuelve a leer una nueva tecla. 
 
@@ -76,24 +87,22 @@ flowchart TD
  
 Dentro del **workspace** creado en clase (my_turtle_controller), se procedió a editar el archivo move_turtle.py para poder mover la tortuga utilizando las flechas del teclado. A continución se describe cada linea de código para la conformaciòn del control de movimiento manual.
 
-**Adición de lbrerias**
+**Adición de librerias**
 
 Como primer paso, se agregaron nuevas librerías además de las que ya existían en el código anterior. Las librerías incorporadas fueron:
 
-◦ Empty: Esta librería es un tipo especial de servicio definido en el paquete std_srvs, que se usa cuando se quiere activar una acción en un nodo sin tener que enviarle parámetros.Un ejemplo común de su uso es la limpieza de la pantalla en una simulación.
+◦ Empty: Esta librería es un tipo especial de servicio definido en el paquete std_srvs, que se usa cuando se quiere activar una acción en un nodo sin tener que enviarle parámetros. Un ejemplo común de su uso es la limpieza de la pantalla en una simulación.
 
 ◦ curses: Esta librería proporciona un conjunto de funciones para la gestión de entradas de teclado permitiendo capturar pulsaciones de teclas sin necesidad de presionar "Enter" y gestionar eventos de teclado en tiempo real.
 
-La libreria Empty fue utilizada para implementar una funciòn adicional que permita limpiar los trazos de las trayectorias marcadas en la pantalla de turtlesim.
+La libreria Empty fue utilizada para implementar una función adicional que permita limpiar los trazos de las trayectorias marcadas en la pantalla de turtlesim.
  
  ```
-#*******************************Importaciòn de librerias*******************************
-
 import rclpy
 from rclpy.node import Node
 from geometry_msgs.msg import Twist
-from std_srvs.srv import Empty           # Libreria adicional para limpiar pantalla
-import curses                            # Libreria adicional para permitir la entrada de teclado
+from std_srvs.srv import Empty           
+import curses                            
  
 ```
 **Creación de la clase TurtleController**
@@ -107,7 +116,6 @@ Se definió la clase **TurtleController**, la cual heredó de la clase **Node**,
 *self.create_publisher(Twist, '/turtle1/cmd_vel', 10)*: crea un publicador en la clase **TurtleController** utilizando el método. Este publicador permite que el nodo envie mensajes del tipo Twist al tópico */turtle1/cmd_vel*, el cual se utiliza para controlar el movimiento de la tortuga en el simulador. 
 
 ```
-# *******************************Creacion de la clase TurtleController**********************************
 class TurtleController(Node):       
     def __init__(self):
         super().__init__('turtle_controller')
@@ -125,7 +133,6 @@ Para limpiar la pantalla de las trayectorias marcadas por la tortuga, se creó u
 *self.get_logger().info('Esperando al servicio /clear...')*: Mientras espera la disponibilidad del servicio, el nodo imprime un mensaje en el registro indicando que siga esperando. Este mensaje es útil para informar que el cliente continua buscando el servicio para poder interactuar con él.
 
 ```
-# *******************************Creacion de cliente para el servicio CLEAR**********************************
 self.clear_client = self.create_client(Empty, '/clear')
 while not self.clear_client.wait_for_service(timeout_sec=1.0):
     self.get_logger().info('Esperando al servicio /clear...')
@@ -146,7 +153,6 @@ Se creó la función Limpiar trayectoria con los siguientes comandos:
 
 
 ```
-#**************************Creación de la función Limpiar trayectoria (clear_trail)**********************************
 def clear_trail(self):
         req = Empty.Request()
         self.clear_client.call_async(req)
@@ -164,20 +170,22 @@ Para la función control_loop se efectuaron las siguentes lìneas de còdigo:
 
 *stdscr.clear()*: Borra todo el contenido de la ventana stdscr (la terminal), permite que los mensajes anteriores se borren y solo se muestren los nuevos.
 
-*stdscr.addstr(0, 0, "↑ ↓ ← → para mover, 'c' limpiar trayectoria, 'q' salir.")*: addstr escribe una cadena de texto en la ventana stdscr, donde el parámetro (0, 0) especifica las coordenadas de la pantalla donde se imprimirá el texto, en este caso, la esquina superior izquierda de la terminal.
+*stdscr.addstr(0, 0, "↑ ↓ ← → para mover, 't' limpiar trayectoria, 'q' salir.")*: addstr escribe una cadena de texto en la ventana stdscr, donde el parámetro (0, 0) especifica las coordenadas de la pantalla donde se imprimirá el texto, en este caso, la esquina superior izquierda de la terminal.
 "↑ ↓ ← → para mover, 'c' limpiar trayectoria, 'q' salir." es el mensaje que se muestra en la pantalla, indicando las teclas que el usuario debe presionar para controlar la tortuga.
+
+![Indicaciones](Carpeta/trayectoria.jpg)
 
 *stdscr.refresh()*: actualiza la pantalla de la ventana stdscr después de realizar cambios, asegurando que el contenido recién añadido o actualizado sea visible para el usuario.
 
 ```
-#**************************Creación de la función control_loop**********************************
 def control_loop(self, stdscr):
         curses.cbreak()
         stdscr.nodelay(True)
         stdscr.clear()
-        stdscr.addstr(0, 0, "↑ ↓ ← → para mover, 'c' limpiar trayectoria, 'q' salir.")
+        stdscr.addstr(0, 0, "↑ ↓ ← → para mover, 't' limpiar trayectoria, 'q' salir.")
         stdscr.refresh()
 ```
+
 
 **Creación del bucle principal de control**
 
@@ -197,10 +205,10 @@ Luego,se crea los comando a partir de instrucciones condicionales segun qué tec
 ◦ elif key == ord('q'):: Si se presiona la tecla 'q', el bucle termina y el programa se detiene.<br>
 
 *self.publisher_.publish(msg)*: Publica el mensaje msg en el tópico /turtle1/cmd_vel para que la tortuga reciba las instrucciones de movimiento.<br>
-*rclpy.spin_once(self, timeout_sec=0.1)*: Ejecuta una iteración de rclpy para procesar cualquier callback pendiente y esperar 0.1 segundos.
+
+*rclpy.spin_once(self, timeout_sec=0.1)*: Permite que el nodo procese mensajes, servicios, timers y cualquier evento pendiente de ROS 2 durante un máximo de 0.1 segundos, sin quedarse esperando indefinidamente.
 
 ```
-#**************************Creación del bucle principal de control**********************************
 while rclpy.ok():
             key = stdscr.getch()
             msg = Twist()
@@ -234,7 +242,6 @@ while rclpy.ok():
 *rclpy.shutdown()*: es una función que detiene el sistema de comunicación de ROS 2. Esta función se debe llamar al final de un programa que utiliza ROS 2 para liberar todos los recursos que ROS 2 ha estado utilizando durante la ejecución.
 
 ```
-#**************************Definición de la función main**********************************
 def main(args=None):
     rclpy.init(args=args)
     node = TurtleController()
@@ -246,6 +253,15 @@ def main(args=None):
         node.destroy_node()
         rclpy.shutdown()
 ```
+
+De esta forma se obtiene el codigo para el control de movimiento manual que cumple con los requerimiento solicitados.
+
+![Turtlesim](Carpeta/Punto_1.jpg)
+
+Adicionalmente, se anexa el script con el código completo para el controlador de movimiento manual, el cual puedes consultar [aquí](Laboratorio_No.01_Robotica_de_Desarrollo_Intro_a_ROS_2_Humble_Turtlesim/move_turtle.py
+
+
+
 **2. Dibujo automático de letras personalizadas**
 
 El principio de captura de información de las teclas es similar al del punto anterior, pero ahora se utilizan las letras del teclado, por lo que no hay necesidad de convertir el valor de las flechas, ya que se puede hacer la comparación directa con el carácter correspondiente a cada tecla, otra diferencia es que ahora cada tecla tiene asociada una función para dibujar la letra, mediante un conjunto de movimientos secuenciales, adicionalmente se mantiene la implementación anterior de las funciones para borrar y terminar ejecución del control de movimiento de la tortuga (tecla x y tecla q respectivamente), la primera se mantiene aunque al finalizar la letra se borran las trayectorias de la pantalla, la tortuga se debe desplazar al origen para asegurar que al hacer la siguiente figura no se salga de los límites de la panta, aunque este movimiento de traslación al origen deja un trazo, aquí la importancia de la letra x para eliminarlo.
@@ -400,5 +416,9 @@ flowchart TD
 
 ```
 
+## Conclusiones
 
+Durante el laboratorio se logró entender la arquitectura fundamental de ROS 2, incluyendo conceptos clave como nodos, tópicos, servicios y mensajes. Esto permitió conectar adecuadamente un nodo programado en Python con el simulador Turtlesim, cumpliendo así con los requisitos planteados.
+
+El desarrollo de funciones para que la tortuga dibujara letras específicas en el simulador Turtlesim representó un primer acercamiento práctico al control de trayectorias en robótica. Esta actividad permitió fortalecer habilidades fundamentales como la planificación de movimientos, el control preciso de velocidad y dirección, y la programación lógica de acciones secuenciales, todas competencias esenciales en el manejo de sistemas moviles.
 
