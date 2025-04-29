@@ -247,6 +247,10 @@ def main(args=None):
         node.destroy_node()
         rclpy.shutdown()
 ```
+De esta forma se obtiene el codigo para el control de movimiento manual que cumple con los requerimiento solicitados.
+
+![Turtlesim](Carpeta/Punto_1.jpg)
+
 Adicionalmente, se anexa el script con el código completo para el controlador manual de movimiento, el cual puedes consultar [aquí](Laboratorio_No.01_Robotica_de_Desarrollo_Intro_a_ROS_2_Humble_Turtlesim/move_turtle.py).
 
 
