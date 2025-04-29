@@ -259,7 +259,9 @@ Adicionalmente, se anexa el script con el código completo para el controlador d
 
 
 
-**2. Dibujo automático de letras personalizadas**
+## **2. Dibujo automático de letras personalizadas**
+
+## Diseño y funcionamiento
 
 El principio de captura de información de las teclas es similar al del punto anterior, pero ahora se utilizan las letras del teclado, por lo que no hay necesidad de convertir el valor de las flechas, ya que se puede hacer la comparación directa con el carácter correspondiente a cada tecla, otra diferencia es que ahora cada tecla tiene asociada una función para dibujar la letra, mediante un conjunto de movimientos secuenciales, adicionalmente se mantiene la implementación anterior de las funciones para borrar y terminar ejecución del control de movimiento de la tortuga (tecla x y tecla q respectivamente), la primera se mantiene aunque al finalizar la letra se borran las trayectorias de la pantalla, la tortuga se debe desplazar al origen para asegurar que al hacer la siguiente figura no se salga de los límites de la panta, aunque este movimiento de traslación al origen deja un trazo, aquí la importancia de la letra x para eliminarlo.
 
@@ -268,6 +270,66 @@ En cuánto al funcionamiento del programa, se inicia leyendo el valor de la tecl
 $\sqrt{(x-x_0)^2+(y-y_0)^2}$
 
 Dónde $x_0, y_0$ representan el punto de origen dónde la tortuga comienza cada movimiento, mientrás que x y y són las posiciones en las que se encuentra actualmente la tortuga, cuándo se llega a la distancia solicitada termina el movimiento y se procede a ejecutar la siguiente instrucción, en cuanto a las rotaciones, se generan limitando también el valor del ángulo a rotar de acuerdo a lo que se encesite. Después de completar la figura de la letra y si se ha presionado otra tecla la pantalla se borra y la tortuga se dirige al punto de inicio dónde estaba al principio el programa, para comenzar con la nueva letra. En cuánto a la tecla q tiene la misma funcionalidad que en el punto anterior, al igual que la función de borrar que ahora está asignada a la tecla x.
+
+```mermaid
+---
+config:
+  theme: redux
+---
+flowchart TD
+    A(["inicio"]) --> n1["self.letter&lt;---Lectura del teclado"]
+    n1 --> B{"self.letter==M"} & n39["self.letter==x"] & n41["self.letter==q"]
+    B --> n2["Sí"] & n3["No"]
+    n2 --> C["Dibujar la M"]
+    n3 --> n4["self.letter==J"]
+    n4 --> n7["Sí"] & n8["No"]
+    n7 --> n18["Dibujar la J"]
+    n8 --> n15@{ label: "self.letter=='l'" }
+    n15 --> n9["Sí"] & n13["No"]
+    n9 --> n19["Dibujar la L"]
+    n13 --> n16@{ label: "self.letter=='R'" }
+    n16 --> n10["Sí"] & n14["No"]
+    n10 --> n20["Dibujar la R"]
+    n14 --> n17@{ label: "self.letter=='C'" }
+    n17 --> n11["Sí"] & n21["No"]
+    n11 --> n22["Dibujar la C"]
+    n21 --> n23@{ label: "self.letter=='S'" }
+    n18 --> n31["Borrar pantalla y regresar al origen"]
+    n31 --> n1
+    n19 --> n32["Borrar pantalla y regresar al origen"]
+    n32 --> n1
+    n20 --> n33["Borrar pantalla y regresar al origene"]
+    n33 --> n1
+    n22 --> n34["Borrar pantalla y regresar al origen"]
+    n34 --> n1
+    n23 --> n35["Sí"]
+    n35 --> n36["Dibujar la S"]
+    n36 --> n37["Borrar pantalla y regresar al origen"]
+    n37 --> n1
+    n39 --> n40["Borrar la pantalla"]
+    n40 --> n1
+    n41 --> n42(["Fin"])
+    C --> n43["Borrar pantalla y regresar al origen"]
+    n43 --> n1
+    n1@{ shape: rect}
+    n2@{ shape: text}
+    n3@{ shape: text}
+    n4@{ shape: diam}
+    n7@{ shape: text}
+    n8@{ shape: text}
+    n15@{ shape: diam}
+    n9@{ shape: text}
+    n13@{ shape: text}
+    n16@{ shape: diam}
+    n10@{ shape: text}
+    n14@{ shape: text}
+    n17@{ shape: diam}
+    n11@{ shape: text}
+    n21@{ shape: text}
+    n23@{ shape: diam}
+    n35@{ shape: text}
+
+```
 
 Dibujo letra L:
 
@@ -284,6 +346,8 @@ Dibujo letra R:
 Dibujo letra J:
 
 ![Dibujo letra J](Carpeta/J.png)
+
+## Procedimiento
 
 Las librerías usadas fueron las siguientes:
 
@@ -369,65 +433,8 @@ Bucle de control, y condicionales que llaman a la función de la letra, de acuer
 ```
 
 El diagrama de flujo del programa es el siguiente:
-```mermaid
----
-config:
-  theme: redux
----
-flowchart TD
-    A(["inicio"]) --> n1["self.letter&lt;---Lectura del teclado"]
-    n1 --> B{"self.letter==M"} & n39["self.letter==x"] & n41["self.letter==q"]
-    B --> n2["Sí"] & n3["No"]
-    n2 --> C["Dibujar la M"]
-    n3 --> n4["self.letter==J"]
-    n4 --> n7["Sí"] & n8["No"]
-    n7 --> n18["Dibujar la J"]
-    n8 --> n15@{ label: "self.letter=='l'" }
-    n15 --> n9["Sí"] & n13["No"]
-    n9 --> n19["Dibujar la L"]
-    n13 --> n16@{ label: "self.letter=='R'" }
-    n16 --> n10["Sí"] & n14["No"]
-    n10 --> n20["Dibujar la R"]
-    n14 --> n17@{ label: "self.letter=='C'" }
-    n17 --> n11["Sí"] & n21["No"]
-    n11 --> n22["Dibujar la C"]
-    n21 --> n23@{ label: "self.letter=='S'" }
-    n18 --> n31["Borrar pantalla y regresar al origen"]
-    n31 --> n1
-    n19 --> n32["Borrar pantalla y regresar al origen"]
-    n32 --> n1
-    n20 --> n33["Borrar pantalla y regresar al origene"]
-    n33 --> n1
-    n22 --> n34["Borrar pantalla y regresar al origen"]
-    n34 --> n1
-    n23 --> n35["Sí"]
-    n35 --> n36["Dibujar la S"]
-    n36 --> n37["Borrar pantalla y regresar al origen"]
-    n37 --> n1
-    n39 --> n40["Borrar la pantalla"]
-    n40 --> n1
-    n41 --> n42(["Fin"])
-    C --> n43["Borrar pantalla y regresar al origen"]
-    n43 --> n1
-    n1@{ shape: rect}
-    n2@{ shape: text}
-    n3@{ shape: text}
-    n4@{ shape: diam}
-    n7@{ shape: text}
-    n8@{ shape: text}
-    n15@{ shape: diam}
-    n9@{ shape: text}
-    n13@{ shape: text}
-    n16@{ shape: diam}
-    n10@{ shape: text}
-    n14@{ shape: text}
-    n17@{ shape: diam}
-    n11@{ shape: text}
-    n21@{ shape: text}
-    n23@{ shape: diam}
-    n35@{ shape: text}
 
-```
+
 Adicionalmente, se anexa el script con el código completo para el segundo punto, el cual se puede consultar [aquí](move_turtle2.py) 
 
 ## Conclusiones
