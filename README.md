@@ -39,10 +39,9 @@ Dentro del **workspace** creado en clase (*my_turtle_controller*), se debe edita
 
 • No se puede utilizar el nodo *turtle_teleop_key* para el control con teclado.
 
+## **1. Control de movimiento manual**
 
 ## Diseño y funcionamiento
-
-**1. Control de movimiento manual**
 
 El controlador de movimiento manual de la tortuga en Turtlesim está diseñado para utilizar el teclado, específicamente las flechas direccionales. Existen varias formas de configurar este control. Una de ellas consiste en que, al oprimir una flecha, la tortuga se mueva de manera continua en la dirección indicada hasta que se presione una flecha diferente para cambiar su trayectoria.
 
@@ -82,9 +81,7 @@ flowchart TD
 ```
 ## Procedimiento
 
- **1. Control de movimiento manual**
- 
- 
+
 Dentro del **workspace** creado en clase (my_turtle_controller), se procedió a editar el archivo move_turtle.py para poder mover la tortuga utilizando las flechas del teclado. A continución se describe cada linea de código para la conformaciòn del control de movimiento manual.
 
 **Adición de librerias**
