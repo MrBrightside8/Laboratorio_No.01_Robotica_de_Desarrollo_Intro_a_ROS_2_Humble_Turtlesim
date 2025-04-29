@@ -422,3 +422,5 @@ Durante el laboratorio se logró entender la arquitectura fundamental de ROS 2, 
 
 El desarrollo de funciones para que la tortuga dibujara letras específicas en el simulador Turtlesim representó un primer acercamiento práctico al control de trayectorias en robótica. Esta actividad permitió fortalecer habilidades fundamentales como la planificación de movimientos, el control preciso de velocidad y dirección, y la programación lógica de acciones secuenciales, todas competencias esenciales en el manejo de sistemas moviles.
 
+Se aprendió a conocer aspectos básicos del sistema operativo Linux y se implementaron algunos comandos, entendiendo su estructura y funcionamiento.
+
