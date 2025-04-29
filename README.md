@@ -25,7 +25,6 @@ Dentro del **workspace** creado en clase (*my_turtle_controller*), se debe edita
 ◦ Flecha ←: girar a la izquierda.<br>
 ◦ Flecha →: girar a la derecha.<br>
 
-![Turtlesim](Carpeta/turtle.png)
 
 ## Restricción importante:
 • Gestionar el movimiento de la tortuga exclusivamente desde el script *move_turtle.py*.
@@ -37,6 +36,8 @@ Dentro del **workspace** creado en clase (*my_turtle_controller*), se debe edita
 **1. Control de movimiento manual**
 
 El controlador de movimiento manual de la tortuga en Turtlesim está diseñado para utilizar el teclado, específicamente las flechas direccionales. Existen varias formas de configurar este control. Una de ellas consiste en que, al oprimir una flecha, la tortuga se mueva de manera continua en la dirección indicada hasta que se presione una flecha diferente para cambiar su trayectoria.
+
+![Turtlesim](Carpeta/turtle.png)
 
 Sin embargo, este diseño presenta una limitación importante: como el movimiento de la tortuga está restringido por el área de la pantalla de Turtlesim, si no se modifica la dirección oportunamente, la tortuga inevitablemente chocará contra una de las paredes, ya que continuará avanzando indefinidamente en la trayectoria inicial.
 
