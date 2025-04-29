@@ -86,7 +86,7 @@ Como primer paso, se agregaron nuevas librerías además de las que ya existían
 
 ◦ curses: Esta librería proporciona un conjunto de funciones para la gestión de entradas de teclado permitiendo capturar pulsaciones de teclas sin necesidad de presionar "Enter" y gestionar eventos de teclado en tiempo real.
 
-La libreria Empty fue utilizada para implementar una funciòn adicional que permita limpiar los trazos de las trayectorias marcadas en la pantalla de turtlesim.
+La libreria Empty fue utilizada para implementar una función adicional que permita limpiar los trazos de las trayectorias marcadas en la pantalla de turtlesim.
  
  ```
 import rclpy
