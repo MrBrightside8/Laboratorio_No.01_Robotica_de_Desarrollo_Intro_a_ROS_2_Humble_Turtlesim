@@ -447,4 +447,7 @@ El desarrollo de funciones para que la tortuga dibujara letras específicas en e
 Se aprendió a conocer aspectos básicos del sistema operativo Linux y se implementaron algunos comandos, entendiendo su estructura y funcionamiento.
 
 ## Vídeo de la explicación
+
+A continuación se adjunta el link del vídeo que explica los procedimientos realizados del laboratorio:
+
 https://youtu.be/IVcjHYH698o
