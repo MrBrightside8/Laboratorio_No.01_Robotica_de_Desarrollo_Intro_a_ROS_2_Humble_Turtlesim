@@ -89,13 +89,11 @@ Como primer paso, se agregaron nuevas librerías además de las que ya existían
 La libreria Empty fue utilizada para implementar una funciòn adicional que permita limpiar los trazos de las trayectorias marcadas en la pantalla de turtlesim.
  
  ```
-#*******************************Importaciòn de librerias*******************************
-
 import rclpy
 from rclpy.node import Node
 from geometry_msgs.msg import Twist
-from std_srvs.srv import Empty           # Libreria adicional para limpiar pantalla
-import curses                            # Libreria adicional para permitir la entrada de teclado
+from std_srvs.srv import Empty           
+import curses                            
  
 ```
 **Creación de la clase TurtleController**
@@ -109,7 +107,6 @@ Se definió la clase **TurtleController**, la cual heredó de la clase **Node**,
 *self.create_publisher(Twist, '/turtle1/cmd_vel', 10)*: crea un publicador en la clase **TurtleController** utilizando el método. Este publicador permite que el nodo envie mensajes del tipo Twist al tópico */turtle1/cmd_vel*, el cual se utiliza para controlar el movimiento de la tortuga en el simulador. 
 
 ```
-# *******************************Creacion de la clase TurtleController**********************************
 class TurtleController(Node):       
     def __init__(self):
         super().__init__('turtle_controller')
@@ -127,7 +124,6 @@ Para limpiar la pantalla de las trayectorias marcadas por la tortuga, se creó u
 *self.get_logger().info('Esperando al servicio /clear...')*: Mientras espera la disponibilidad del servicio, el nodo imprime un mensaje en el registro indicando que siga esperando. Este mensaje es útil para informar que el cliente continua buscando el servicio para poder interactuar con él.
 
 ```
-# *******************************Creacion de cliente para el servicio CLEAR**********************************
 self.clear_client = self.create_client(Empty, '/clear')
 while not self.clear_client.wait_for_service(timeout_sec=1.0):
     self.get_logger().info('Esperando al servicio /clear...')
@@ -148,7 +144,6 @@ Se creó la función Limpiar trayectoria con los siguientes comandos:
 
 
 ```
-#**************************Creación de la función Limpiar trayectoria (clear_trail)**********************************
 def clear_trail(self):
         req = Empty.Request()
         self.clear_client.call_async(req)
@@ -174,7 +169,6 @@ Para la función control_loop se efectuaron las siguentes lìneas de còdigo:
 *stdscr.refresh()*: actualiza la pantalla de la ventana stdscr después de realizar cambios, asegurando que el contenido recién añadido o actualizado sea visible para el usuario.
 
 ```
-#**************************Creación de la función control_loop**********************************
 def control_loop(self, stdscr):
         curses.cbreak()
         stdscr.nodelay(True)
@@ -202,10 +196,10 @@ Luego,se crea los comando a partir de instrucciones condicionales segun qué tec
 ◦ elif key == ord('q'):: Si se presiona la tecla 'q', el bucle termina y el programa se detiene.<br>
 
 *self.publisher_.publish(msg)*: Publica el mensaje msg en el tópico /turtle1/cmd_vel para que la tortuga reciba las instrucciones de movimiento.<br>
-*rclpy.spin_once(self, timeout_sec=0.1)*: Ejecuta una iteración de rclpy para procesar cualquier callback pendiente y esperar 0.1 segundos.
+
+*rclpy.spin_once(self, timeout_sec=0.1)*: Permite que el nodo procese mensajes, servicios, timers y cualquier evento pendiente de ROS 2 durante un máximo de 0.1 segundos, sin quedarse esperando indefinidamente.
 
 ```
-#**************************Creación del bucle principal de control**********************************
 while rclpy.ok():
             key = stdscr.getch()
             msg = Twist()
@@ -239,7 +233,6 @@ while rclpy.ok():
 *rclpy.shutdown()*: es una función que detiene el sistema de comunicación de ROS 2. Esta función se debe llamar al final de un programa que utiliza ROS 2 para liberar todos los recursos que ROS 2 ha estado utilizando durante la ejecución.
 
 ```
-#**************************Definición de la función main**********************************
 def main(args=None):
     rclpy.init(args=args)
     node = TurtleController()
