@@ -109,7 +109,7 @@ import curses
 
 Se definió la clase **TurtleController**, la cual heredó de la clase **Node**, lo que permite que TurtleController se convierta en un nodo dentro de ROS.
 
-*def __init__(self)*: inicializa el objeto de la clase **TurtleController** mediante el método especial, el cual actúa como el constructor de la clase.
+*def _init_(self)*: inicializa el objeto de la clase **TurtleController** mediante el método especial, el cual actúa como el constructor de la clase.
 
 *super().__init__('turtle_controller')*: dentro del constructor, se invoca el constructor de la clase base **Node**  con *super().*. En este caso, 'turtle_controller' fue el nombre asignado al nodo dentro de ROS.
 
